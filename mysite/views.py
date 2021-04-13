@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from mysite import models
 from mysite import models, forms
 
+
 def index(request, pid=None, del_pass=None):
     posts = models.Post.objects.filter(enabled=True).order_by('-pub_time')[:30]
     moods = models.Mood.objects.all()
@@ -74,3 +75,18 @@ def contact(request):
     else:
         form = forms.ContactForm()
     return render(request, 'contact.html', locals())
+
+
+def post2db(request):
+    if request.method == 'POST':
+        post_form = forms.PostForm(request.POST)
+        if post_form.is_valid():
+            message = "您的訊息已儲存，要等管理者啟用後才看得到喔。"
+            post_form.save()
+        else:
+            message = '如要張貼訊息，則每一個欄位都要填...'
+    else:
+        post_form = forms.PostForm()
+        message = '如要張貼訊息，則每一個欄位都要填...'
+
+    return render(request, 'post2db.html', locals())
