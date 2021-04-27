@@ -5,7 +5,7 @@ from mysite import models, forms
 
 
 def index(request, pid=None, del_pass=None):
-    posts = models.Post.objects.filter(enabled=True).order_by('-pub_time')[:30]
+    posts = models.Post.objects.order_by('-pub_time')[:30]
     moods = models.Mood.objects.all()
     try:
         user_id = request.GET['user_id']
@@ -46,6 +46,7 @@ def posting(request):
     moods = models.Mood.objects.all()
     try:
         user_id = request.POST['user_id']
+        user_title = request.POST['user_title']
         user_pass = request.POST['user_pass']
         user_post = request.POST['user_post']
         user_mood = request.POST['mood']
@@ -54,7 +55,7 @@ def posting(request):
         message = '如果要張貼訊息，則每一個欄位都要填寫'
     if user_id is not None:
         mood = models.Mood.objects.get(status=user_mood)
-        post = models.Post.objects.create(mood=mood, nickname=user_id, del_pass=user_pass, message=user_post)
+        post = models.Post.objects.create(mood=mood, nickname=user_id, msgtitle=user_title, del_pass=user_pass, message=user_post)
         post.save()
         message = '成功儲存! 請記得你的編輯密碼[{}]!'.format(user_pass)
 
